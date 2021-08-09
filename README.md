@@ -239,3 +239,5 @@ invoke  active_record
       invoke  scss
       create    app/assets/stylesheets/scaffolds.scss
 ```
+
+At this point we have a full friend's routes structure. We can access to the sections that have the CRUD functions (we can see them in the table above). 
