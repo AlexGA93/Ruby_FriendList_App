@@ -241,3 +241,9 @@ invoke  active_record
 ```
 
 At this point we have a full friend's routes structure. We can access to the sections that have the CRUD functions (we can see them in the table above). 
+
+## 6. Styling App with Bootstrap
+---
+In this section you must look every friend's component that renders html content. It has been updated with table, buttons and labels modified by Bootstrap.
+
+Also we've added a 'notice' function .

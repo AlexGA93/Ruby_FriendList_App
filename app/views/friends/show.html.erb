@@ -1,29 +1,27 @@
-<p id="notice"><%= notice %></p>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-<p>
-  <strong>First name:</strong>
-  <%= @friend.first_name %>
-</p>
+<div class="jumbotron m-3">
+  <h1 class="display-4">
+    <%= @friend.first_name %>
+    <%= @friend.last_name %>
+  </h1>
+  <p class="lead">
+    <%= @friend.email %> |
+    <%= @friend.phone %> |
+    <%= @friend.twitter %>
+  </p>
 
-<p>
-  <strong>Last name:</strong>
-  <%= @friend.last_name %>
-</p>
+  <%= link_to 'Edit', edit_friend_path(@friend) ,class:"btn btn-dark"%> 
+  <%= link_to 'Back', friends_path ,class:"btn btn-secondary"%>
+</div>
 
-<p>
-  <strong>Email:</strong>
-  <%= @friend.email %>
-</p>
 
-<p>
-  <strong>Phone:</strong>
-  <%= @friend.phone %>
-</p>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-<p>
-  <strong>Twitter:</strong>
-  <%= @friend.twitter %>
-</p>
 
-<%= link_to 'Edit', edit_friend_path(@friend) %> |
-<%= link_to 'Back', friends_path %>
+
+
+
+
+
+
