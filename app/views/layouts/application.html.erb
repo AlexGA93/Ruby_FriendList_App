@@ -13,7 +13,11 @@
   <body>
     <!-- Navbar component -->
     <%= render 'home/header' %>
-    <div>
+    <div class="container">
+      <%if notice%>
+        <%= render 'layouts/alerts' %>
+      <% end %>
+      
       <br/>
       <%= yield %>
     </div>
