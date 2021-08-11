@@ -247,3 +247,175 @@ At this point we have a full friend's routes structure. We can access to the sec
 In this section you must look every friend's component that renders html content. It has been updated with table, buttons and labels modified by Bootstrap.
 
 Also we've added a 'notice' function .
+
+## 7. User Management
+---
+We're going to implement a Login system that we'll be capable to:
+
+- Register a perosnal account.
+- Log in.
+- Edit our profile.
+- Change our account's password.
+
+For that, we're going to use a gem called '**devise**'. It can be downloaded from the official site: **https://rubygems.org/gems/devise**.
+In this case we are gonig to copy the gemfile to paste it into our project's Gemfile.
+
+```
+gem 'devise', '~> 4.8'
+```
+
+And make a couple of steps in our terminal:
+
+- 1.Install all our gems( old ones and new ones)
+```
+bundle install
+```
+- 2.Go to devise Github's page at gem's 'Homepage' section: **https://github.com/heartcombo/devise**. And we've to search the 'Getting started section'. There it will show us the list of commands and actions that we need to follow to install this gems with all its dependencies.
+```
+rails generate devise:install
+```
+We're going to follow the terminal's instructions that this command gives us with the installation.
+
+    ```
+    Running via Spring preloader in process 350839
+      create  config/initializers/devise.rb
+      create  config/locales/devise.en.yml
+        ===============================================================================
+
+        Depending on your application's configuration some manual setup may be required:
+
+          1. Ensure you have defined default url options in your environments files. Here
+            is an example of default_url_options appropriate for a development environment
+            in config/environments/development.rb:
+
+              config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+            In production, :host should be set to the actual host of your application.
+
+            * Required for all applications. *
+
+          2. Ensure you have defined root_url to *something* in your config/routes.rb.
+            For example:
+
+              root to: "home#index"
+            
+            * Not required for API-only Applications *
+
+          3. Ensure you have flash messages in app/views/layouts/application.html.erb.
+            For example:
+
+              <p class="notice"><%= notice %></p>
+              <p class="alert"><%= alert %></p>
+
+            * Not required for API-only Applications *
+
+          4. You can copy Devise views (for customization) to your app by running:
+
+              rails g devise:views
+              
+            * Not required *
+
+        ===============================================================================
+
+    ```
+
+  **WARNINGS**: 
+  - Don't forget to repeat the step 1 to **friends/config/environments/production.rb** and for **friends/config/environments/development.rb** too.
+  - Step two and three are already done.
+  - Step four will shows us all the files created similar to friend's files.
+  ```
+  Running via Spring preloader in process 355540
+  invoke  Devise::Generators::SharedViewsGenerator
+  create    app/views/devise/shared
+  create    app/views/devise/shared/_error_messages.html.erb
+  create    app/views/devise/shared/_links.html.erb
+  invoke  form_for
+  create    app/views/devise/confirmations
+  create    app/views/devise/confirmations/new.html.erb
+  create    app/views/devise/passwords
+  create    app/views/devise/passwords/edit.html.erb
+  create    app/views/devise/passwords/new.html.erb
+  create    app/views/devise/registrations
+  create    app/views/devise/registrations/edit.html.erb
+  create    app/views/devise/registrations/new.html.erb
+  create    app/views/devise/sessions
+  create    app/views/devise/sessions/new.html.erb
+  create    app/views/devise/unlocks
+  create    app/views/devise/unlocks/new.html.erb
+  invoke  erb
+  create    app/views/devise/mailer
+  create    app/views/devise/mailer/confirmation_instructions.html.erb
+  create    app/views/devise/mailer/email_changed.html.erb
+  create    app/views/devise/mailer/password_change.html.erb
+  create    app/views/devise/mailer/reset_password_instructions.html.erb
+  create    app/views/devise/mailer/unlock_instructions.html.erb
+
+  ```
+We come back to Github's page to crate a model changing 'MODEL' to 'user'.
+```
+rails generate devise user
+```
+And it will print the proccess info:
+```
+Running via Spring preloader in process 358311
+      invoke  active_record
+      create    db/migrate/20210811135710_devise_create_users.rb
+      create    app/models/user.rb
+      invoke    test_unit
+      create      test/models/user_test.rb
+      create      test/fixtures/users.yml
+      insert    app/models/user.rb
+       route  devise_for :users
+
+```
+Then having created a database migration, we need to push that database migration like always:
+```
+rails db:migrate
+```
+With the next print: 
+```
+== 20210811135710 DeviseCreateUsers: migrating ================================
+-- create_table(:users)
+   -> 0.0017s
+-- add_index(:users, :email, {:unique=>true})
+   -> 0.0007s
+-- add_index(:users, :reset_password_token, {:unique=>true})
+   -> 0.0007s
+== 20210811135710 DeviseCreateUsers: migrated (0.0033s) =======================
+
+```
+
+Our next step is to add a few more links to our navbar, so let's go to that component and add the following links:
+
+```
+  <% if user_signed_in? %>
+    <li class="nav-item">
+      <%= link_to 'Add Friend', new_friend_path, class:"nav-link" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to 'Log Out', destroy_user_session_path, data:{method: :delete} ,class:"nav-link" %>
+    </li>
+
+    <li class="nav-item">
+        <%= link_to 'Edit Profile', edit_user_registration_path, class:"nav-link" %>
+    </li>
+  <% else %>
+    <li class="nav-item">
+        <%= link_to 'Register', new_user_registration_path, class:"nav-link" %>
+    </li>
+
+    <li class="nav-item">
+        <%= link_to 'Log In', new_user_session_path, class:"nav-link" %>
+    </li>
+  <% end %>
+
+```
+
+See that our navbar has been modified to show only add frinds and log out if we are logged.
+
+```
+rails routes
+```
+
+
+
