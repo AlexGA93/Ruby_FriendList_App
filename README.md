@@ -603,3 +603,5 @@ We're going to apply Bootstrap styles to all form pages:
       <%= render "devise/shared/links" %>
 
     ```
+    
+    
