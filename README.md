@@ -417,5 +417,191 @@ See that our navbar has been modified to show only add frinds and log out if we 
 rails routes
 ```
 
+## 8. Style Devise Views
+---
+
+First of all, we're going to apply Bootstrap to the Log in Form (**app/views/devise/sessions/new.html.erb**):
+
+```
+<h2>Log in</h2>
+
+<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  <div class="field form-group">
+    <%= f.label :email %><br />
+    <%= f.email_field :email,class:"form-control",placeholder:"Email" ,autofocus: true, autocomplete: "email" %>
+  </div>
+  <br />
+  <div class="field form-group">
+    <%= f.label :password %><br />
+    <%= f.password_field :password,class:"form-control" ,placeholder:"Password" , autocomplete: "current-password" %>
+  </div>
+  <br />
+  <% if devise_mapping.rememberable? %>
+    <div class="field form-group">
+      <%= f.check_box :remember_me, class:"form-check-input" %>
+      <%= f.label :remember_me %>
+    </div>
+  <% end %>
+  <br />
+  <div class="actions">
+    <%= f.submit "Log in",class:'btn btn-secondary' %>
+  </div>
+<% end %>
+<br />
+<%= render "devise/shared/links" %>
+```
+
+NOTE: If we look into **app/views/devise/shared/_links.html.erb** we can see the links to access from login form line 'Sign up & Forgot your password?'.
+
+We're going to apply Bootstrap styles to all form pages:
+  
+  - 1. Log in (**app/views/devise/sessions/new.html.erb**)
+    ```
+      <div class="card">
+    <div class="card-header">
+      <h2>Log in</h2>
+    </div>
+    <div class="card-body">
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <div class="field form-group">
+          <%= f.label :email %><br />
+          <%= f.email_field :email,class:"form-control",placeholder:"Email" ,autofocus: true, autocomplete: "email" %>
+        </div>
+        <br />
+        <div class="field form-group">
+          <%= f.label :password %><br />
+          <%= f.password_field :password,class:"form-control" ,placeholder:"Password" , autocomplete: "current-password" %>
+        </div>
+        <br />
+        <% if devise_mapping.rememberable? %>
+          <div class="field form-group">
+            <%= f.check_box :remember_me, class:"form-check-input" %>
+            <%= f.label :remember_me %>
+          </div>
+        <% end %>
+        <br />
+        <div class="actions">
+          <%= f.submit "Log in",class:'btn btn-secondary' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <br />
+  <%= render "devise/shared/links" %>
+
+    ```
+  - 2. Add Friend (**app/views/friends/new.html.erb**)
+    ```
+    <div class="card">
+      <div class="card-header">
+        <h1>New Friend</h1>
+      </div>
+      <div class="card-body">
+        <%= render 'form', friend: @friend %>
+        <%= link_to 'Back', friends_path, class:"btn btn-secondary" %>
+      </div>
+    </div>
+    ```
+  - 3. Edit Profile (**app/views/devise/registrations/edit.html.erb**)
+    ```
+        <div class="card">
+      <div class="card-header">
+        <h2>Edit Profile <%= resource_name.to_s.humanize %></h2>
+      </div>
+      <div class="card-body">
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+          <%= render "devise/shared/error_messages", resource: resource %>
+
+          <div class="field form-group">
+            <% f.label :email %><br />
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", class:"form-control", placeholder:"Email" %>
+          </div>
+
+          <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+            <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+          <% end %>
+          <br/>
+          <div class="field form-group">
+            <% f.label :password %> <!--<i>(leave blank if you don't want to change it)</i>--><br />
+            <%= f.password_field :password, autocomplete: "new-password", class:"form-control", placeholder:"Password (leave blank if you don't want to change it)" %>
+            <% if @minimum_password_length %>
+            
+              <em><%= @minimum_password_length %> characters minimum</em>
+              
+            <% end %>
+          </div>
+          <br/>
+          <div class="field form-group">
+            <% f.label :password_confirmation %><br />
+            <%= f.password_field :password_confirmation, autocomplete: "new-password", class:"form-control", placeholder:"Password Confirmation" %>
+          </div>
+          <br/>
+          <div class="field form-group">
+            <% f.label :current_password %> <!--<i>(we need your current password to confirm your changes)</i>--><br />
+            <%= f.password_field :current_password, autocomplete: "current-password", class:"form-control", placeholder:"Current Password(we need your current password to confirm your changes)" %>
+          </div>
+          <br/>
+          <div class="actions">
+            <%= f.submit "Update" , class:'btn btn-info'%>
+            <br/>
+            <%= link_to "Back", :back %>
+            </div>
+        <% end %>
+        </div>
+    </div>
+    <br/>
 
 
+    <div class="card">
+      <div class="card-header">
+        <h3>Cancel my account</h3>
+      </div>
+      <div class="card-body">
+      <p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete, class:'btn btn-danger' %></p>
+      </div>
+    </div>
+
+    <br/><br/>
+    ```
+  - 4. Register (**app/views/devise/registrations/new.html.erb**)
+    ```
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Sign up</h2>
+        </div>
+        <div class="card-body">
+          <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+            <%= render "devise/shared/error_messages", resource: resource %>
+          
+            <div class="field form-group">
+              <% f.label :email %><br />
+              <%= f.email_field :email, autofocus: true, autocomplete: "email" ,placeholder:"Email"%>
+            </div>
+            <br/>
+            <div class="field form-group">
+              <% f.label :password %>
+              <% if @minimum_password_length %>
+              <em>(<%= @minimum_password_length %> characters minimum)</em>
+              <% end %><br />
+              <%= f.password_field :password, autocomplete: "new-password",placeholder:"Password" %>
+            </div>
+          
+            <div class="field form-group">
+              <% f.label :password_confirmation %><br />
+              <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder:"Repeat Password" %>
+            </div>
+            <br/>
+            <div class="actions">
+              <%= f.submit "Sign up" ,class:'btn btn-secondary' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+
+      <%= render "devise/shared/links" %>
+
+    ```
+    
+    
