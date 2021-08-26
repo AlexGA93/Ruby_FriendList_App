@@ -604,11 +604,14 @@ We're going to apply Bootstrap styles to all form pages:
 
     ```
     
-    ## 9. Associations
+## 9. Associations
 ---
 
 **ATTENTION!**: beware to delete all the previous friends and destroy user's account.
 ---
+
+
+ ### 9.1 First Steps
 
 At this point, we're going to give each specific user their own friends list instead a only one big friend list. For this we're going to use 'rails associations'. You can see the official [Ruby's site](https://guides.rubyonrails.org/association_basics.html) for more information.
 
@@ -721,4 +724,94 @@ At this point we've created a hidden field with the current user id to add into 
 def friend_params
   params.require(:friend).permit(:first_name, :last_name, :email, :phone, :twitter,:user_id)
 end
+```
+
+  ### 9.1 Associating Tables
+
+We're going to edit our code to only see our user's friends in the table because if we're logged out we can still see all friends stored ina single table, so we'll fix that issue using a 'before action'(action to makes something BEFORE something else happens):
+
+- We're going to configure our friend's controller to do a couple of things(**app/controllers/friends_controller.rb**):
+
+  1. Don't let do anything if user is not authorized (except controller methods)
+  ```
+  # 'If a user is not authenticated don't let it do anything except controller methods'
+  before_action :authenticate_user!, except: [:index, :show]
+  ```
+  2. Check if the current user is the correct one
+  ```
+  # check if the curent user is the correct one
+  before_action :correct_user, only: [:edit, :update, :destroy]
+  ```
+  3. Associate this friend with the user who is creating it to 'new' and 'create' method.
+  ```
+    # GET /friends/new
+    # we want to associate tis friend with the user who is creating it.
+    def new
+      # @friend = Friend.new
+      @friend = current_user.friends.build
+    end
+
+    # GET /friends/1/edit
+    def edit
+    end
+
+    # POST /friends or /friends.json
+    # we want to associate tis friend with the user who is creating it.
+    def create
+      # @friend = Friend.new(friend_params)
+      @friend = current_user.friends.build(friend_params)
+
+      respond_to do |format|
+        if @friend.save
+          format.html { redirect_to @friend, notice: "Friend was successfully created." }
+          format.json { render :show, status: :created, location: @friend }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @friend.errors, status: :unprocessable_entity }
+        end
+      end
+    end
+  ```
+  4. Declaring 'correct_user' method to check the current friend by id.
+  ```
+    def correct_user
+      # The correct user is the one who's been associated with this id
+      @friend = current_user.friends.find_by(id: params[:id])
+      # If is not the correct user, show a notice message and redirect
+      redirect_to friends_path, notice: "Not Autherized to Edit this Friend" if @friend.nil?
+    end 
+  ```
+- We're going to modify our Friend's table to see only our user's freinds and the current user's id who created it(**app/views/friends/index.html.erb**).
+```
+  <table class="table table-bordered table-hover table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Twitter</th>
+        <th>User Id</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @friends.each do |friend| %>
+        <!-- Only Display User's friends -->
+        <% if friend.user == current_user %>
+          <tr>
+            <td><%= friend.first_name %></td>
+            <td><%= friend.last_name %></td>
+            <td><%= friend.email %></td>
+            <td><%= friend.phone %></td>
+            <td><%= friend.twitter %></td>
+            <td><%= friend.user_id %></td>
+            <td><%= link_to 'Show', friend ,class:"btn btn-primary"%></td>
+            <td><%= link_to 'Edit', edit_friend_path(friend) ,class:"btn btn-info"%></td>
+            <td><%= button_to 'Destroy', friend, method: :delete, form:{data:{confirm: 'Are you sure?'}},class:"btn btn-danger"%></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
 ```

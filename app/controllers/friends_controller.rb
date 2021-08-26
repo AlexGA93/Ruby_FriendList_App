@@ -1,18 +1,27 @@
 class FriendsController < ApplicationController
   before_action :set_friend, only: [ :show,  :edit, :update, :destroy ]
 
+  # 'If a user is not authenticated don't let it do anything except controller methods'
+  before_action :authenticate_user!, except: [:index, :show]
+
+  # check if the curent user is the correct one
+  before_action :correct_user, only: [:edit, :update, :destroy]
+
+
   # GET /friends or /friends.json
   def index
     @friends = Friend.all
-  end
+  end 
 
   # GET /friends/1 or /friends/1.json
   def show
   end
 
   # GET /friends/new
+  # we want to associate tis friend with the user who is creating it.
   def new
-    @friend = Friend.new
+    # @friend = Friend.new
+    @friend = current_user.friends.build
   end
 
   # GET /friends/1/edit
@@ -20,8 +29,10 @@ class FriendsController < ApplicationController
   end
 
   # POST /friends or /friends.json
+  # we want to associate tis friend with the user who is creating it.
   def create
-    @friend = Friend.new(friend_params)
+    # @friend = Friend.new(friend_params)
+    @friend = current_user.friends.build(friend_params)
 
     respond_to do |format|
       if @friend.save
@@ -58,6 +69,13 @@ class FriendsController < ApplicationController
       end
     end
   end
+
+  def correct_user
+    # The correct user is the one who's been associated with this id
+    @friend = current_user.friends.find_by(id: params[:id])
+    # If is not the correct user, show a notice message and redirect
+    redirect_to friends_path, notice: "Not Autherized to Edit this Friend" if @friend.nil?
+  end 
 
   private
     # Use callbacks to share common setup or constraints between actions.
