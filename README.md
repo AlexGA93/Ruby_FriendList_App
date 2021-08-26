@@ -604,4 +604,121 @@ We're going to apply Bootstrap styles to all form pages:
 
     ```
     
+    ## 9. Associations
+---
+
+**ATTENTION!**: beware to delete all the previous friends and destroy user's account.
+---
+
+At this point, we're going to give each specific user their own friends list instead a only one big friend list. For this we're going to use 'rails associations'. You can see the official [Ruby's site](https://guides.rubyonrails.org/association_basics.html) for more information.
+
+First of all, we have to do associations in our friend's ans user's model (**app/models/friend.rb** & **app/models/user.rb**).
+```
+class Friend < ApplicationRecord
+    # Associations
+    belongs_to :user 
     
+end
+```
+and 
+
+```
+class User < ApplicationRecord
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
+  # Associations
+  has_many :friends
+end
+
+```
+Next tep is be able to keep track of who our user is and whose friends belongs to who. To do this, we need to create a new field in our friends table in our database. For that we'll do two steps:
+  1. Creating a migration.
+  ```
+  rails g migration add_user_id_to_friends user_id:integer:index
+  ```
+
+  - **g**: ganerate
+  - **migration** :what we want to generate
+  - **add_user_id_to_friends** :name of the migration (we want to add a user id to our friends table)
+  - **user_id:integer:index** :parameters
+
+  we should recieve a terminal message like this to inform that the new migration is created"
+  ```
+  Running via Spring preloader in process 46440
+      invoke  active_record
+      create    db/migrate/20210826080639_add_user_id_to_friends.rb
+  ```
+
+  And we can see the new migration file created just now(**db/migrate/20210826080639_add_user_id_to_friends.rb**):
+  ```
+    class AddUserIdToFriends < ActiveRecord::Migration[6.1]
+    def change
+      add_column :friends, :user_id, :integer
+      add_index :friends, :user_id
+    end
+  end
+
+  ```
+  2. Push that migration into the database.
+  ```
+  rails db:migrate
+  ```
+  With the following confirmation message:
+  ```
+    == 20210826080639 AddUserIdToFriends: migrating ===============================
+  -- add_column(:friends, :user_id, :integer)
+    -> 0.0016s
+  -- add_index(:friends, :user_id)
+    -> 0.0013s
+  == 20210826080639 AddUserIdToFriends: migrated (0.0044s) ======================
+  ```
+
+We can see that our schema is changed with the new required information:
+```
+ActiveRecord::Schema.define(version: 2021_08_26_080639) do
+
+  create_table "friends", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "phone"
+    t.string "twitter"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "user_id"                   #<=========================================
+    t.index ["user_id"], name: "index_friends_on_user_id" #<=========================
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+end
+```
+Now we need to be able to let our system know that when we create a new friend, it belogs to that user id. We're going to edit our New Friend's form(**app/views/friends/new.html.erb** && **app/views/friends/_form.html.erb**):
+
+We want it to be pre-populated with our current user id. For that, we can visit [RubyGems's devise Homepage section](https://github.com/heartcombo/devise) and using **<%= current_user.inspect %>**.
+```
+<div class="field form-group">
+    <%= form.number_field :user_id,id: :friend_user_id ,class:"form-control", value: current_user.id ,type: :hidden %>
+</div>
+<br/>
+<!--User data checking: <%= current_user.inspect %>-->
+```
+At this point we've created a hidden field with the current user id to add into our database, but if we submit a new friend request, our app will return an error because user id is not actually getting passed. To fix it we need to add user_id as new parameter in our friend controller (**app/controllers/friends_controller.rb**):
+
+```
+def friend_params
+  params.require(:friend).permit(:first_name, :last_name, :email, :phone, :twitter,:user_id)
+end
+```
