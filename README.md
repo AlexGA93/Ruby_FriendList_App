@@ -2,6 +2,20 @@
 
 Brief friend list app built on Ruby on rails to knowledge.
 
+# Index
+- [Create project's folder.]()
+- []()
+- []()
+- []()
+- []()
+- []()
+- []()
+- []()
+- []()
+- []()
+- []()
+- []()
+
 ## 1. Create project's folder.
 
 ```
@@ -866,3 +880,24 @@ And wrap our table in a ruby's logic to render the table if user is signed or re
     <%= link_to friend.first_name, friend %>
   </td>
 ``` 
+
+# Images
+
+- Home
+![home](imgs/home.png)
+- About
+![about](imgs/about.png)
+- Login
+![login](imgs/login.png)
+- Register
+![register](imgs/register.png)
+- Show Friend
+![show](imgs/show.png)
+- Edit Friend
+![edit](imgs/edit.png)
+- Friend Deleted
+![deleted](imgs/deleted.png)
+- Show Table (main page if user logged)
+![Table](imgs/showTable.png)
+- Edit User Account
+![edit account](imgs/editAccount.png)
