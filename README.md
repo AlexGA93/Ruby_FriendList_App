@@ -726,7 +726,7 @@ def friend_params
 end
 ```
 
-  ### 9.1 Associating Tables
+  ### 9.2 Associating Tables
 
 We're going to edit our code to only see our user's friends in the table because if we're logged out we can still see all friends stored ina single table, so we'll fix that issue using a 'before action'(action to makes something BEFORE something else happens):
 
@@ -815,3 +815,54 @@ We're going to edit our code to only see our user's friends in the table because
     </tbody>
   </table>
 ```
+
+## 10. Adding Some Styles
+---
+
+We're going to add some changes to look better our app.
+
+- Change our root route to friend's index.
+```
+  Rails.application.routes.draw do
+    devise_for :users
+    resources :friends
+    get 'home/about'
+
+    # root 'home#index'  # <===========
+    root 'friends#index'
+  end
+```
+
+- Show our table only if user is signed. In any other case, render an index page(**app/views/friends/index.html.erb**).
+
+To do this we need to add to our routes file the following intruction to access to it.
+```
+  Rails.application.routes.draw do
+    devise_for :users
+    resources :friends
+    get 'home/about'
+    get 'home/index'  #<===============
+    # root 'home#index'
+    root 'friends#index'
+  end
+```
+And wrap our table in a ruby's logic to render the table if user is signed or render the home/index page if not:
+```
+<% if user_signed_in? %>
+
+  ... FRIENDS TABLE ... 
+
+<% else %>
+
+  <%= render :template => 'home/index' %>
+
+<% end %>
+```
+[Good stuff](https://www.tutorialspoint.com/ruby-on-rails/rails-render.htm)
+
+- Make clickable friend's names by edit friend's first name instruction
+```
+  <td>
+    <%= link_to friend.first_name, friend %>
+  </td>
+``` 
