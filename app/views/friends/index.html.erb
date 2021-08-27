@@ -1,39 +1,43 @@
-<p id="notice"><%= notice %></p>
+<% if user_signed_in? %>
+  <p id="notice"><%= notice %></p>
 
-<h1>Friends</h1>
+  <h1>Friends</h1>
 
-<table class="table table-bordered table-hover table-striped">
-  <thead class="table-dark">
-    <tr>
-      <th>First name</th>
-      <th>Last name</th>
-      <th>Email</th>
-      <th>Phone</th>
-      <th>Twitter</th>
-      <th>User Id</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @friends.each do |friend| %>
-      <!-- Only Display User's friends -->
-      <% if friend.user == current_user %>
-        <tr>
-          <td><%= friend.first_name %></td>
-          <td><%= friend.last_name %></td>
-          <td><%= friend.email %></td>
-          <td><%= friend.phone %></td>
-          <td><%= friend.twitter %></td>
-          <td><%= friend.user_id %></td>
-          <td><%= link_to 'Show', friend ,class:"btn btn-primary"%></td>
-          <td><%= link_to 'Edit', edit_friend_path(friend) ,class:"btn btn-info"%></td>
-          <td><%= button_to 'Destroy', friend, method: :delete, form:{data:{confirm: 'Are you sure?'}},class:"btn btn-danger"%></td>
-        </tr>
+  <table class="table table-bordered table-hover table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Twitter</th>
+        <!--<th>User Id</th>-->
+        <th colspan="3">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @friends.each do |friend| %>
+        <!-- Only Display User's friends -->
+        <% if friend.user == current_user %>
+          <tr>
+            <td><%= link_to friend.first_name, friend %></td>
+            <td><%= friend.last_name %></td>
+            <td><%= friend.email %></td>
+            <td><%= friend.phone %></td>
+            <td><%= friend.twitter %></td>
+            <!--<td><%= friend.user_id %></td>-->
+            <td><%= link_to 'Show', friend ,class:"btn btn-primary"%></td>
+            <td><%= link_to 'Edit', edit_friend_path(friend) ,class:"btn btn-info"%></td>
+            <td><%= button_to 'Destroy', friend, method: :delete, form:{data:{confirm: 'Are you sure?'}},class:"btn btn-danger"%></td>
+          </tr>
+        <% end %>
       <% end %>
-    <% end %>
-  </tbody>
-</table>
+    </tbody>
+  </table>
 
-<br>
+  <br>
 
-<%= link_to 'New Friend', new_friend_path , class:"btn btn-secondary"%>
+  <%= link_to 'New Friend', new_friend_path , class:"btn btn-secondary"%>
+<% else %>
+  <%= render :template => 'home/index' %>
+<% end %>

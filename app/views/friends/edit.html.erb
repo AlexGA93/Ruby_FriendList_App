@@ -7,6 +7,10 @@
 
 
         <%= link_to 'Show', @friend ,class:"btn btn-info"%> 
-        <%= link_to 'Back', friends_path , class:"btn btn-secondary"%>
+        
+        <%= link_to 'Back', friends_path , class:"btn btn-dark"%>
+        <br/>
+        <br/>
+        <%= button_to 'Destroy', @friend, method: :delete,class:"btn btn-danger"%>
     </div>
 </div>
