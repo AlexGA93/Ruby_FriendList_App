@@ -3,18 +3,19 @@
 Brief friend list app built on Ruby on rails to knowledge.
 
 # Index
-- [Create project's folder.]()
-- []()
-- []()
-- []()
-- []()
-- []()
-- []()
-- []()
-- []()
-- []()
-- []()
-- []()
+- [1. Create project's folder.](#1-create-projects-folder)
+- [2. Creating our first controller.](#2-creating-our-first-controller)
+- [3. Dealing with Routes.](#3-dealing-with-routes)
+- [4. Using Bootsrap](#4-using-bootsrap)
+- [5. CRUD Scaffold](#5-crud-scaffold)
+- [6. Styling App with Bootstrap](#6-styling-app-with-bootstrap)
+- [7. User Management](#7-user-management)
+- [8. Style Devise Views](#8-style-devise-views)
+- [9. Associations](#9-associations)
+ - [9.1 First Steps](#91-first-steps)
+ - [9.2 Associating Tables](#92-associating-tables)
+- [10. Adding Some Styles](#10-adding-some-styles)
+- [Images](#images)
 
 ## 1. Create project's folder.
 
